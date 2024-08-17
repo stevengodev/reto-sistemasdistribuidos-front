@@ -10,7 +10,7 @@ import { Producto } from '../../interfaces/producto.interface';
   imports: [ReactiveFormsModule],
   templateUrl: './formulario-producto.component.html'
 })
-export class ProductoFormularioComponent implements OnInit{
+export class ProductoFormularioComponent implements OnInit {
 
   productoForm: FormGroup;
   @Input() esEditar!: boolean;
@@ -23,6 +23,7 @@ export class ProductoFormularioComponent implements OnInit{
   ) {
     this.productoForm = this.fb.group({
       // id: [{ value: '', disabled: true}],  // Asegúrate de deshabilitarlo si no quieres que se edite
+      id: null,
       nombre: ['', Validators.required],
       categoria: ['', Validators.required],
       precio: [0, Validators.required],
@@ -33,13 +34,15 @@ export class ProductoFormularioComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    
+    // Obtiene el parámetro 'id' de la URL
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
-
-      this.productosService.getProducto(id).subscribe(
-        (data: Producto) => {
+      this.productosService.getProducto(id).subscribe({
+        next: (data: Producto) => {
           this.productoForm.patchValue({
+            id : data.id,
             nombre: data.nombre,
             categoria: data.categoria,
             precio: data.precio,
@@ -47,14 +50,14 @@ export class ProductoFormularioComponent implements OnInit{
             marca: data.marca
           });
         },
-        error => {
-          console.error('Error al obtener el producto', error);
-        }
+        error: (e) => console.error(e),
+        complete: () => console.info('complete')
+      }
       );
     }
-    
+
     console.log(this.esEditar)
-  
+
   }
 
   onSubmit(): void {
@@ -62,16 +65,11 @@ export class ProductoFormularioComponent implements OnInit{
       // const producto: Producto = this.productoForm.getRawValue();
 
       const producto: Producto = this.productoForm.value;
+
       if (this.esEditar) {
-        this.productosService.actualizarProducto(producto).subscribe(
-          () => this.router.navigate(['/']),
-          error => console.error('Error al actualizar el producto', error)
-        );
+        this.actualizar(producto);
       } else {
-        this.productosService.crearProducto(producto).subscribe(
-          () => this.router.navigate(['/']),
-          error => console.error('Error al crear el producto', error)
-        );
+        this.crear(producto);
       }
     }
   }
@@ -79,5 +77,19 @@ export class ProductoFormularioComponent implements OnInit{
   volver(): void {
     this.router.navigate(['/']);
   }
-  
+
+  actualizar(producto: Producto) {
+    this.productosService.actualizarProducto(producto).subscribe({
+        next: () => this.router.navigate(['/']),
+        error: (err) => console.error('Error al actualizar el producto', err)
+      });
+  }
+
+  crear(producto: Producto) {
+    this.productosService.crearProducto(producto).subscribe({
+      next: () => this.router.navigate(['/']),
+      error: (err) => console.error('Error al crear el producto', err)
+    });
+  }
+
 }
