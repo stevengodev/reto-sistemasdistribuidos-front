@@ -1,0 +1,13 @@
+
+@if (producto) {
+<div>
+    <p><strong>Nombre:</strong> {{ producto.nombre }}</p>
+    <p><strong>Categoría:</strong> {{ producto.categoria }}</p>
+    <p><strong>Precio:</strong> {{ producto.precio | currency }}</p>
+    <p><strong>Stock:</strong> {{ producto.stock }}</p>
+    <p><strong>Marca:</strong> {{ producto.marca }}</p>
+
+    <button [routerLink]="['/editar', producto.id]" class="btn btn-warning me-2">Editar</button>
+    <button (click)="volver()" class="btn btn-secondary">Volver</button>
+</div>
+}
