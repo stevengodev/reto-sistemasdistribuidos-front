@@ -14,6 +14,7 @@ export class ProductoFormularioComponent implements OnInit {
 
   productoForm: FormGroup;
   @Input() esEditar!: boolean;
+  txtId! : string;
 
   constructor(
     private fb: FormBuilder,
@@ -39,6 +40,7 @@ export class ProductoFormularioComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
+      this.txtId = id;
       this.productosService.getProducto(id).subscribe({
         next: (data: Producto) => {
           this.productoForm.patchValue({

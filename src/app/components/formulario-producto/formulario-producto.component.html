@@ -1,6 +1,10 @@
 <form [formGroup]="productoForm" (ngSubmit)="onSubmit()">
 
     <div class="form-group">
+        <p><strong>ID: </strong>{{txtId}}</p>
+    </div>
+
+    <div class="form-group">
         <label for="nombre">Nombre:</label>
         <input id="nombre" formControlName="nombre" class="form-control" />
     </div>
