@@ -1,8 +1,10 @@
 <form [formGroup]="productoForm" (ngSubmit)="onSubmit()">
 
-    <div class="form-group">
-        <p><strong>ID: </strong>{{txtId}}</p>
-    </div>
+    @if (esEditar) {
+        <div class="form-group">
+            <p><strong>ID: </strong>{{txtId}}</p>
+        </div>
+    }
 
     <div class="form-group">
         <label for="nombre">Nombre:</label>
